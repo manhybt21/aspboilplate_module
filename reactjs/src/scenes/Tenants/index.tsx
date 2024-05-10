@@ -1,212 +1,219 @@
-import * as React from 'react';
-
-import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table, Tag } from 'antd';
-import { FormInstance } from 'antd/lib/form';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Button,
+  Card,
+  Col,
+  Dropdown,
+  Input,
+  Menu,
+  Row,
+  Table,
+  Tag,
+  Modal,
+  TableColumnsType,
+  TablePaginationConfig,
+} from 'antd';
 import { inject, observer } from 'mobx-react';
-
-import AppComponentBase from '../../components/AppComponentBase';
 import CreateOrUpdateTenant from './components/createOrUpdateTenant';
-import { EntityDto } from '../../services/dto/entityDto';
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
-import TenantStore from '../../stores/tenantStore';
 import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
-
-export interface ITenantProps {
-  tenantStore: TenantStore;
-}
-
-export interface ITenantState {
-  modalVisible: boolean;
-  maxResultCount: number;
-  skipCount: number;
-  tenantId: number;
-  filter: string;
-}
+import { EntityDto } from '../../services/dto/entityDto';
+import { FormInstance } from 'antd/lib';
+import { GetAllTenantOutput } from '../../services/tenant/dto/getAllTenantOutput';
 
 const confirm = Modal.confirm;
-const Search = Input.Search;
+const { Search } = Input;
 
-@inject(Stores.TenantStore)
-@observer
-class Tenant extends AppComponentBase<ITenantProps, ITenantState> {
-  formRef = React.createRef<FormInstance>();
+const Tenant = ({ tenantStore }: any) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [tenantId, setTenantId] = useState(0);
+  const [filter, setFilter] = useState('');
+  const [skipCount, setSkipCount] = useState(1);
+  const formRef = useRef<FormInstance>(null);
 
-  state = {
-    modalVisible: false,
-    maxResultCount: 10,
-    skipCount: 0,
-    tenantId: 0,
-    filter: '',
+  useEffect(() => {
+    getAll();
+  }, [skipCount]);
+
+  const getAll = async () => {
+    await tenantStore.getAll({ maxResultCount: 10, skipCount: 0, keyword: filter });
   };
 
-  async componentDidMount() {
-    await this.getAll();
-  }
-
-  async getAll() {
-    await this.props.tenantStore.getAll({ maxResultCount: this.state.maxResultCount, skipCount: this.state.skipCount, keyword: this.state.filter });
-  }
-
-  handleTableChange = (pagination: any) => {
-    this.setState({ skipCount: (pagination.current - 1) * this.state.maxResultCount! }, async () => await this.getAll());
+  const handleTableChange = async (pagination: TablePaginationConfig) => {
+    const skipCount = (pagination?.current ?? 1 - 1) * 10;
+    setSkipCount(skipCount);
+    await tenantStore.getAll({ maxResultCount: 10, skipCount: skipCount, keyword: filter });
   };
 
-  Modal = () => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
-    });
-  };
-
-  async createOrUpdateModalOpen(entityDto: EntityDto) {
+  const createOrUpdateModalOpen = async (entityDto: EntityDto) => {
     if (entityDto.id === 0) {
-      this.props.tenantStore.createTenant();
+      tenantStore.createTenant();
     } else {
-      await this.props.tenantStore.get(entityDto);
+      await tenantStore.get(entityDto);
     }
 
-    this.setState({ tenantId: entityDto.id });
-    this.Modal();
+    setTenantId(entityDto.id);
+    setModalVisible(true);
 
     setTimeout(() => {
       if (entityDto.id !== 0) {
-        this.formRef.current?.setFieldsValue({
-          ...this.props.tenantStore.tenantModel,
+        formRef.current?.setFieldsValue({
+          ...tenantStore.tenantModel,
         });
       } else {
-        this.formRef.current?.resetFields();
+        formRef.current?.resetFields();
       }
     }, 100);
-  }
+  };
 
-  delete(input: EntityDto) {
-    const self = this;
+  const deleteTenant = (input: EntityDto) => {
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        self.props.tenantStore.delete(input);
+        tenantStore.delete(input);
       },
       onCancel() {},
     });
-  }
+  };
 
-  handleCreate = async () => {
-    this.formRef.current?.validateFields().then(async (values: any) => {
-      if (this.state.tenantId === 0) {
-        await this.props.tenantStore.create(values);
+  const handleCreate = async () => {
+    formRef.current?.validateFields().then(async (values) => {
+      if (tenantId === 0) {
+        await tenantStore.create(values);
       } else {
-        await this.props.tenantStore.update({ id: this.state.tenantId, ...values });
+        await tenantStore.update({ id: tenantId, ...values });
       }
 
-      await this.getAll();
-      this.setState({ modalVisible: false });
-      this.formRef.current?.resetFields();
+      await getAll();
+      setModalVisible(false);
+      formRef.current?.resetFields();
     });
   };
 
-  handleSearch = (value: string) => {
-    this.setState({ filter: value }, async () => await this.getAll());
+  const handleSearch = (value: string) => {
+    setFilter(value);
+    getAll();
   };
 
-  public render() {
-    const { tenants } = this.props.tenantStore;
-    const columns = [
-      { title: L('TenancyName'), dataIndex: 'tenancyName', key: 'tenancyName', width: 150, render: (text: string) => <div>{text}</div> },
-      { title: L('Name'), dataIndex: 'name', key: 'name', width: 150, render: (text: string) => <div>{text}</div> },
-      {
-        title: L('IsActive'),
-        dataIndex: 'isActive',
-        key: 'isActive',
-        width: 150,
-        render: (text: boolean) => (text === true ? <Tag color="#2db7f5">{L('Yes')}</Tag> : <Tag color="red">{L('No')}</Tag>),
-      },
-      {
-        title: L('Actions'),
-        width: 150,
-        render: (text: string, item: any) => (
-          <div>
-            <Dropdown
-              trigger={['click']}
-              overlay={
-                <Menu>
-                  <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.id })}>{L('Edit')}</Menu.Item>
-                  <Menu.Item onClick={() => this.delete({ id: item.id })}>{L('Delete')}</Menu.Item>
-                </Menu>
-              }
-              placement="bottomLeft"
-            >
-              <Button type="primary" icon={<SettingOutlined />}>
-                {L('Actions')}
-              </Button>
-            </Dropdown>
-          </div>
-        ),
-      },
-    ];
+  const { tenants } = tenantStore;
 
-    return (
-      <Card>
-        <Row>
-          <Col
-            xs={{ span: 4, offset: 0 }}
-            sm={{ span: 4, offset: 0 }}
-            md={{ span: 4, offset: 0 }}
-            lg={{ span: 2, offset: 0 }}
-            xl={{ span: 2, offset: 0 }}
-            xxl={{ span: 2, offset: 0 }}
+  const columns: TableColumnsType<GetAllTenantOutput> = [
+    {
+      title: L('TenancyName'),
+      dataIndex: 'tenancyName',
+      key: 'tenancyName',
+      width: 150,
+      render: (text) => <div>{text}</div>,
+    },
+    {
+      title: L('Name'),
+      dataIndex: 'name',
+      key: 'name',
+      width: 150,
+      render: (text) => <div>{text}</div>,
+    },
+    {
+      title: L('IsActive'),
+      dataIndex: 'isActive',
+      key: 'isActive',
+      width: 150,
+      render: (text) =>
+        text === true ? <Tag color="#2db7f5">{L('Yes')}</Tag> : <Tag color="red">{L('No')}</Tag>,
+    },
+    {
+      title: L('Actions'),
+      width: 150,
+      render: (text, item) => (
+        <div>
+          <Dropdown
+            trigger={['click']}
+            overlay={
+              <Menu>
+                <Menu.Item onClick={() => createOrUpdateModalOpen({ id: item.id })}>
+                  {L('Edit')}
+                </Menu.Item>
+                <Menu.Item onClick={() => deleteTenant({ id: item.id })}>{L('Delete')}</Menu.Item>
+              </Menu>
+            }
+            placement="bottomLeft"
           >
-            <h2>{L('Tenants')}</h2>
-          </Col>
-          <Col
-            xs={{ span: 14, offset: 0 }}
-            sm={{ span: 15, offset: 0 }}
-            md={{ span: 15, offset: 0 }}
-            lg={{ span: 1, offset: 21 }}
-            xl={{ span: 1, offset: 21 }}
-            xxl={{ span: 1, offset: 21 }}
-          >
-            <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => this.createOrUpdateModalOpen({ id: 0 })} />
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={{ span: 10, offset: 0 }}>
-            <Search placeholder={this.L('Filter')} onSearch={this.handleSearch} />
-          </Col>
-        </Row>
-        <Row style={{ marginTop: 20 }}>
-          <Col
-            xs={{ span: 24, offset: 0 }}
-            sm={{ span: 24, offset: 0 }}
-            md={{ span: 24, offset: 0 }}
-            lg={{ span: 24, offset: 0 }}
-            xl={{ span: 24, offset: 0 }}
-            xxl={{ span: 24, offset: 0 }}
-          >
-            <Table
-              rowKey="id"
-              bordered={true}
-              pagination={{ pageSize: this.state.maxResultCount, total: tenants === undefined ? 0 : tenants.totalCount, defaultCurrent: 1 }}
-              columns={columns}
-              loading={tenants === undefined ? true : false}
-              dataSource={tenants === undefined ? [] : tenants.items}
-              onChange={this.handleTableChange}
-            />
-          </Col>
-        </Row>
-        <CreateOrUpdateTenant
-          formRef={this.formRef}
-          visible={this.state.modalVisible}
-          onCancel={() =>
-            this.setState({
-              modalVisible: false,
-            })
-          }
-          modalType={this.state.tenantId === 0 ? 'edit' : 'create'}
-          onCreate={this.handleCreate}
-        />
-      </Card>
-    );
-  }
-}
+            <Button type="primary" icon={<SettingOutlined />}>
+              {L('Actions')}
+            </Button>
+          </Dropdown>
+        </div>
+      ),
+    },
+  ];
 
-export default Tenant;
+  return (
+    <Card>
+      <Row>
+        <Col
+          xs={{ span: 4, offset: 0 }}
+          sm={{ span: 4, offset: 0 }}
+          md={{ span: 4, offset: 0 }}
+          lg={{ span: 2, offset: 0 }}
+          xl={{ span: 2, offset: 0 }}
+          xxl={{ span: 2, offset: 0 }}
+        >
+          <h2>{L('Tenants')}</h2>
+        </Col>
+        <Col
+          xs={{ span: 14, offset: 0 }}
+          sm={{ span: 15, offset: 0 }}
+          md={{ span: 15, offset: 0 }}
+          lg={{ span: 1, offset: 21 }}
+          xl={{ span: 1, offset: 21 }}
+          xxl={{ span: 1, offset: 21 }}
+        >
+          <Button
+            type="primary"
+            shape="circle"
+            icon={<PlusOutlined />}
+            onClick={() => createOrUpdateModalOpen({ id: 0 })}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={{ span: 10, offset: 0 }}>
+          <Search placeholder={L('Filter')} onSearch={handleSearch} />
+        </Col>
+      </Row>
+      <Row style={{ marginTop: 20 }}>
+        <Col
+          xs={{ span: 24, offset: 0 }}
+          sm={{ span: 24, offset: 0 }}
+          md={{ span: 24, offset: 0 }}
+          lg={{ span: 24, offset: 0 }}
+          xl={{ span: 24, offset: 0 }}
+          xxl={{ span: 24, offset: 0 }}
+        >
+          <Table
+            rowKey="id"
+            bordered={true}
+            pagination={{
+              pageSize: 10,
+              total: tenants ? tenants.totalCount : 0,
+              defaultCurrent: 1,
+            }}
+            columns={columns}
+            loading={!tenants}
+            dataSource={tenants ? tenants.items : []}
+            onChange={handleTableChange}
+          />
+        </Col>
+      </Row>
+      <CreateOrUpdateTenant
+        formRef={formRef}
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        modalType={tenantId === 0 ? 'edit' : 'create'}
+        onCreate={handleCreate}
+      />
+    </Card>
+  );
+};
+
+export default inject(Stores.TenantStore)(observer(Tenant));

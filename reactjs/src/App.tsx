@@ -1,32 +1,37 @@
 import './App.css';
-
-import * as React from 'react';
-
+import React, { useEffect } from 'react';
 import Router from './components/Router';
-import SessionStore from './stores/sessionStore';
 import SignalRAspNetCoreHelper from './lib/signalRAspNetCoreHelper';
-import Stores from './stores/storeIdentifier';
-import { inject } from 'mobx-react';
+import SessionStore from './stores/sessionStore'; // Import SessionStore directly
+import { Feature } from './services/session/dto/applicationInfoDto';
 
-export interface IAppProps {
-  sessionStore?: SessionStore;
-}
+const App: React.FC = () => {
+  const sessionStore = new SessionStore(); // Instantiate SessionStore
 
-@inject(Stores.SessionStore)
-class App extends React.Component<IAppProps> {
-  async componentDidMount() {
-    await this.props.sessionStore!.getCurrentLoginInformations();
+  useEffect(() => {
+    const fetchData = async () => {
+      await sessionStore.getCurrentLoginInformations();
 
-    if (!!this.props.sessionStore!.currentLogin.user && this.props.sessionStore!.currentLogin.application.features['SignalR']) {
-      if (this.props.sessionStore!.currentLogin.application.features['SignalR.AspNetCore']) {
-        SignalRAspNetCoreHelper.initSignalR();
+      const { currentLogin } = sessionStore;
+
+      if (currentLogin.user && currentLogin.application && currentLogin.application.features) {
+        const features: Feature[] = currentLogin.application.features;
+
+        const signalRFeature = features.find((feature) => feature.name === 'SignalR');
+        const signalRAspNetCoreFeature = features.find(
+          (feature) => feature.name === 'SignalR.AspNetCore'
+        );
+
+        if (signalRFeature && signalRAspNetCoreFeature) {
+          SignalRAspNetCoreHelper.initSignalR();
+        }
       }
-    }
-  }
+    };
 
-  public render() {
-    return <Router />;
-  }
-}
+    fetchData();
+  }, [sessionStore]);
+
+  return <Router />;
+};
 
 export default App;

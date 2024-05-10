@@ -1,13 +1,13 @@
 import { action, observable } from 'mobx';
 
-import { CreateOrUpdateUserInput } from '../services/user/dto/createOrUpdateUserInput';
+import type { CreateOrUpdateUserInput } from '../services/user/dto/createOrUpdateUserInput';
 import { EntityDto } from '../services/dto/entityDto';
 import { GetRoles } from '../services/user/dto/getRolesOuput';
 import { GetUserOutput } from '../services/user/dto/getUserOutput';
-import { PagedResultDto } from '../services/dto/pagedResultDto';
-import { PagedUserResultRequestDto } from '../services/user/dto/PagedUserResultRequestDto';
-import { UpdateUserInput } from '../services/user/dto/updateUserInput';
+import * as PagedUserResultRequestDto from '../services/user/dto/PagedUserResultRequestDto';
+import * as updateUserInput from '../services/user/dto/updateUserInput';
 import userService from '../services/user/userService';
+import type { PagedResultDto } from '../services/dto/pagedResultDto';
 
 class UserStore {
   @observable users!: PagedResultDto<GetUserOutput>;
@@ -21,7 +21,7 @@ class UserStore {
   }
 
   @action
-  async update(updateUserInput: UpdateUserInput) {
+  async update(updateUserInput: updateUserInput.UpdateUserInput) {
     let result = await userService.update(updateUserInput);
     this.users.items = this.users.items.map((x: GetUserOutput) => {
       if (x.id === updateUserInput.id) x = result;
@@ -63,7 +63,7 @@ class UserStore {
   }
 
   @action
-  async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
+  async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto.PagedUserResultRequestDto) {
     let result = await userService.getAll(pagedFilterAndSortedRequest);
     this.users = result;
   }

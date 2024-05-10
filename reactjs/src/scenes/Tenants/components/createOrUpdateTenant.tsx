@@ -14,8 +14,8 @@ export interface ICreateOrUpdateTenantProps {
   formRef: React.RefObject<FormInstance>;
 }
 
-class CreateOrUpdateTenant extends React.Component<ICreateOrUpdateTenantProps> {
-  render() {
+const CreateOrUpdateTenantModal: React.FC<ICreateOrUpdateTenantProps> = (props)=>{
+  
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -54,7 +54,7 @@ class CreateOrUpdateTenant extends React.Component<ICreateOrUpdateTenantProps> {
       },
     };
 
-    const { visible, onCancel, onCreate, formRef } = this.props;
+    const { visible, onCancel, onCreate, formRef } = props;
 
     return (
       <Modal visible={visible} onCancel={onCancel} onOk={onCreate} title={L('Tenants')} width={550}>
@@ -65,12 +65,12 @@ class CreateOrUpdateTenant extends React.Component<ICreateOrUpdateTenantProps> {
           <Form.Item label={L('Name')} name={'name'} rules={rules.name} {...formItemLayout}>
             <Input />
           </Form.Item>
-          {this.props.modalType === 'edit' ? (
+          {props.modalType === 'edit' ? (
             <Form.Item label={L('AdminEmailAddress')} name={'adminEmailAddress'} rules={rules.adminEmailAddress as []} {...formItemLayout}>
               <Input />
             </Form.Item>
           ) : null}
-          {this.props.modalType === 'edit' ? (
+          {props.modalType === 'edit' ? (
             <Form.Item label={L('DatabaseConnectionString')} name={'connectionString'} {...formItemLayout}>
               <Input />
             </Form.Item>
@@ -83,6 +83,5 @@ class CreateOrUpdateTenant extends React.Component<ICreateOrUpdateTenantProps> {
       </Modal>
     );
   }
-}
 
-export default CreateOrUpdateTenant;
+export default CreateOrUpdateTenantModal;

@@ -1,14 +1,14 @@
 import { action, observable } from 'mobx';
 
-import { CreateRoleInput } from '../services/role/dto/createRoleInput';
+import type { CreateRoleInput } from '../services/role/dto/createRoleInput';
 import { EntityDto } from '../services/dto/entityDto';
 import { GetAllPermissionsOutput } from '../services/role/dto/getAllPermissionsOutput';
 import { GetAllRoleOutput } from '../services/role/dto/getAllRoleOutput';
-import { GetRoleAsyncInput } from '../services/role/dto/getRolesAsyncInput';
-import { PagedResultDto } from '../services/dto/pagedResultDto';
-import { PagedRoleResultRequestDto } from '../services/role/dto/PagedRoleResultRequestDto';
+import type { GetRoleAsyncInput } from '../services/role/dto/getRolesAsyncInput';
+import type { PagedResultDto } from '../services/dto/pagedResultDto';
+import type { PagedRoleResultRequestDto } from '../services/role/dto/PagedRoleResultRequestDto';
 import RoleEditModel from '../models/Roles/roleEditModel';
-import { UpdateRoleInput } from '../services/role/dto/updateRoleInput';
+import type { UpdateRoleInput } from '../services/role/dto/updateRoleInput';
 import roleService from '../services/role/roleService';
 
 class RoleStore {

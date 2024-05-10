@@ -11,7 +11,7 @@ const data = [
   { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
 ];
 
-const TinyLineChartExample: React.SFC = () => {
+const TinyLineChartExample: React.FC = () => {
   return (
     <LineChart width={300} height={100} data={data}>
       <Line type="monotone" dataKey="pv" stroke="#fff" strokeWidth={2} />

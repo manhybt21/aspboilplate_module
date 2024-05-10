@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Redirect, Route } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 
 import { isGranted } from '../../lib/abpUtility';
 
@@ -10,23 +10,21 @@ const ProtectedRoute = ({ path, component: Component, permission, render, ...res
   return (
     <Route
       {...rest}
-      render={props => {
+      render={(props: any) => {
         if (!abp.session.userId)
           return (
-            <Redirect
+            <Link
               to={{
                 pathname: '/user/login',
-                state: { from: props.location },
               }}
             />
           );
 
         if (permission && !isGranted(permission)) {
           return (
-            <Redirect
+            <Link
               to={{
                 pathname: '/exception?type=401',
-                state: { from: props.location },
               }}
             />
           );

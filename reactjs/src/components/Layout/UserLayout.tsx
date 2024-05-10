@@ -2,7 +2,7 @@ import './UserLayout.less';
 
 import * as React from 'react';
 
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 
 import { Col } from 'antd';
 import DocumentTitle from 'react-document-title';
@@ -13,26 +13,26 @@ import utils from '../../utils/utils';
 
 class UserLayout extends React.Component<any> {
   render() {
-    const {
-      location: { pathname },
-    } = this.props;
+    // const {
+    //   location: { pathname },
+    // } = this.props;
 
     return (
-      <DocumentTitle title={utils.getPageTitle(pathname)}>
+      <DocumentTitle title={utils.getPageTitle('jajjaj')}>
         <Col className="container">
           <div style={{ height: 'calc(100vh - 55px)' }}>
             <div className={'lang'}>
               <LanguageSelect />
             </div>
-            <Switch>
+            <Routes>
               {userRouter
                 .filter((item: any) => !item.isLayout)
                 .map((item: any, index: number) => (
-                  <Route key={index} path={item.path} component={item.component} exact={item.exact} />
+                  <Route key={index} path={item.path} Component={item.component} />
                 ))}
 
-              <Redirect from="/user" to="/user/login" />
-            </Switch>
+              <Link to="/user/login" />
+            </Routes>
           </div>
           <Footer />
         </Col>

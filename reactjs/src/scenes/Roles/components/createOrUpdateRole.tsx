@@ -19,89 +19,89 @@ export interface ICreateOrUpdateRoleProps {
   formRef: React.RefObject<FormInstance>;
 }
 
-class CreateOrUpdateRole extends React.Component<ICreateOrUpdateRoleProps> {
-  state = {
-    confirmDirty: false,
+const CreateOrUpdateRoleModal: React.FC<ICreateOrUpdateRoleProps> = (props) => {
+  //const [confirmDirty, setConfirmDirty] = React.useState<boolean>(false);
+  const { permissions } = props;
+
+  const options = permissions.map((x: GetAllPermissionsOutput) => {
+    return { label: x.displayName, value: x.name };
+  });
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 6 },
+      sm: { span: 6 },
+      md: { span: 6 },
+      lg: { span: 6 },
+      xl: { span: 6 },
+      xxl: { span: 6 },
+    },
+    wrapperCol: {
+      xs: { span: 18 },
+      sm: { span: 18 },
+      md: { span: 18 },
+      lg: { span: 18 },
+      xl: { span: 18 },
+      xxl: { span: 18 },
+    },
   };
 
-  render() {
-    const { permissions } = this.props;
+  const tailFormItemLayout = {
+    labelCol: {
+      xs: { span: 6 },
+      sm: { span: 6 },
+      md: { span: 6 },
+      lg: { span: 6 },
+      xl: { span: 6 },
+      xxl: { span: 6 },
+    },
+    wrapperCol: {
+      xs: { span: 18 },
+      sm: { span: 18 },
+      md: { span: 18 },
+      lg: { span: 18 },
+      xl: { span: 18 },
+      xxl: { span: 18 },
+    },
+  };
 
-    const options = permissions.map((x: GetAllPermissionsOutput) => {
-      return { label: x.displayName, value: x.name };
-    });
+  return (
+    <Modal
+      visible={props.visible}
+      cancelText={L('Cancel')}
+      okText={L('OK')}
+      onCancel={props.onCancel}
+      title={L('Role')}
+      onOk={props.onOk}
+      destroyOnClose={true}
+    >
+      <Form ref={props.formRef}>
+        <Tabs defaultActiveKey={'role'} size={'small'} tabBarGutter={64}>
+          <TabPane tab={L('RoleDetails')} key={'role'}>
+            <Form.Item label={L('RoleName')} name={'name'} rules={rules.name} {...formItemLayout}>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label={L('DisplayName')}
+              name={'displayName'}
+              rules={rules.displayName}
+              {...formItemLayout}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item label={L('Description')} name={'description'} {...formItemLayout}>
+              <Input />
+            </Form.Item>
+          </TabPane>
+          <TabPane tab={L('RolePermission')} key={'permission'} forceRender={true}>
+            <Form.Item {...tailFormItemLayout} name={'grantedPermissions'} valuePropName={'value'}>
+              <Checkbox.Group options={options} />
+            </Form.Item>
+          </TabPane>
+        </Tabs>
+      </Form>
+    </Modal>
+  );
+};
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 6 },
-        sm: { span: 6 },
-        md: { span: 6 },
-        lg: { span: 6 },
-        xl: { span: 6 },
-        xxl: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 18 },
-        sm: { span: 18 },
-        md: { span: 18 },
-        lg: { span: 18 },
-        xl: { span: 18 },
-        xxl: { span: 18 },
-      },
-    };
-
-    const tailFormItemLayout = {
-      labelCol: {
-        xs: { span: 6 },
-        sm: { span: 6 },
-        md: { span: 6 },
-        lg: { span: 6 },
-        xl: { span: 6 },
-        xxl: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 18 },
-        sm: { span: 18 },
-        md: { span: 18 },
-        lg: { span: 18 },
-        xl: { span: 18 },
-        xxl: { span: 18 },
-      },
-    };
-
-    return (
-      <Modal
-        visible={this.props.visible}
-        cancelText={L('Cancel')}
-        okText={L('OK')}
-        onCancel={this.props.onCancel}
-        title={L('Role')}
-        onOk={this.props.onOk}
-        destroyOnClose={true}
-      >
-        <Form ref={this.props.formRef}>
-          <Tabs defaultActiveKey={'role'} size={'small'} tabBarGutter={64}>
-            <TabPane tab={L('RoleDetails')} key={'role'}>
-              <Form.Item label={L('RoleName')} name={'name'} rules={rules.name} {...formItemLayout}>
-                <Input />
-              </Form.Item>
-              <Form.Item label={L('DisplayName')} name={'displayName'} rules={rules.displayName} {...formItemLayout}>
-                <Input />
-              </Form.Item>
-              <Form.Item label={L('Description')} name={'description'} {...formItemLayout}>
-                <Input />
-              </Form.Item>
-            </TabPane>
-            <TabPane tab={L('RolePermission')} key={'permission'} forceRender={true}>
-              <Form.Item {...tailFormItemLayout} name={'grantedPermissions'} valuePropName={'value'}>
-                <Checkbox.Group options={options} />
-              </Form.Item>
-            </TabPane>
-          </Tabs>
-        </Form>
-      </Modal>
-    );
-  }
-}
-
-export default CreateOrUpdateRole;
+export default CreateOrUpdateRoleModal;

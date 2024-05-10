@@ -2,7 +2,7 @@ import './AppLayout.less';
 
 import * as React from 'react';
 
-import { Redirect, Switch, Route } from 'react-router-dom';
+import { Route, Routes, Link } from 'react-router-dom';
 
 import DocumentTitle from 'react-document-title';
 import Footer from '../../components/Footer';
@@ -42,26 +42,32 @@ class AppLayout extends React.Component<any> {
 
     const layout = (
       <Layout style={{ minHeight: '100vh' }}>
-        <SiderMenu path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} />
+        <SiderMenu
+          path={path}
+          onCollapse={this.onCollapse}
+          history={history}
+          collapsed={collapsed}
+        />
         <Layout>
           <Layout.Header style={{ background: '#fff', minHeight: 52, padding: 0 }}>
             <Header collapsed={this.state.collapsed} toggle={this.toggle} />
           </Layout.Header>
           <Content style={{ margin: 16 }}>
-            <Switch>
-              {pathname === '/' && <Redirect from="/" to="/dashboard" />}
+            <Routes>
+              {pathname === '/' && <Link to="/dashboard" />}
               {appRouters
                 .filter((item: any) => !item.isLayout)
                 .map((route: any, index: any) => (
                   <Route
-                    exact
                     key={index}
                     path={route.path}
-                    render={(props) => <ProtectedRoute component={route.component} permission={route.permission} />}
+                    Component={(props) => (
+                      <ProtectedRoute component={route.component} permission={route.permission} />
+                    )}
                   />
                 ))}
               {pathname !== '/' && <NotFoundRoute />}
-            </Switch>
+            </Routes>
           </Content>
           <Footer />
         </Layout>

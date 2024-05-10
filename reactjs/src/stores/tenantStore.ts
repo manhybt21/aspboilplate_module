@@ -3,10 +3,10 @@ import { action, observable } from 'mobx';
 import CreateTenantInput from '../services/tenant/dto/createTenantInput';
 import { EntityDto } from '../services/dto/entityDto';
 import { GetAllTenantOutput } from '../services/tenant/dto/getAllTenantOutput';
-import { PagedResultDto } from '../services/dto/pagedResultDto';
-import { PagedTenantResultRequestDto } from '../services/tenant/dto/PagedTenantResultRequestDto';
+import type { PagedResultDto } from '../services/dto/pagedResultDto';
+import type { PagedTenantResultRequestDto } from '../services/tenant/dto/PagedTenantResultRequestDto';
 import TenantModel from '../models/Tenants/TenantModel';
-import UpdateTenantInput from '../services/tenant/dto/updateTenantInput';
+import type UpdateTenantInput from '../services/tenant/dto/updateTenantInput';
 import tenantService from '../services/tenant/tenantService';
 
 class TenantStore {

@@ -13,7 +13,7 @@ export interface IListExampleProps {
   footer?: string;
 }
 
-const ListExample: React.SFC<IListExampleProps> = (props: IListExampleProps) => {
+const ListExample: React.FC<IListExampleProps> = (props: IListExampleProps) => {
   return (
     <List
       header={props.header}

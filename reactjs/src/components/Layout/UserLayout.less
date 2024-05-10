@@ -1,11 +1,9 @@
-@import '~antd/lib/style/themes/default.less';
-
 .container {
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: auto;
-  background: @layout-body-background;
+  background: #ffffff;
 }
 
 .lang {
@@ -23,7 +21,7 @@
   flex: 1;
 }
 
-@media (min-width: @screen-md-min) {
+@media (min-width: 768) {
   .container {
     background-image: url('../../images/userLayout-Backround.svg');
     background-repeat: no-repeat;
@@ -56,7 +54,7 @@
 
 .title {
   font-size: 33px;
-  color: @heading-color;
+  color: #ffffff;
   font-family: 'Myriad Pro', 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-weight: 600;
   position: relative;
@@ -64,8 +62,8 @@
 }
 
 .desc {
-  font-size: @font-size-base;
-  color: @text-color-secondary;
+  font-size: 13;
+  color: #ffffff;
   margin-top: 12px;
   margin-bottom: 40px;
 }

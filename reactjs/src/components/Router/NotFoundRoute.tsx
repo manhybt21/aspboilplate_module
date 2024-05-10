@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 
 export class NotFoundRoute extends Component {
   render() {
     return (
       <>
         <Route
-          render={props => {
+          Component={(props) => {
             return (
-              <Redirect
+              <Link
                 to={{
                   pathname: '/exception?type=404',
-                  state: { from: props.location },
                 }}
               />
             );

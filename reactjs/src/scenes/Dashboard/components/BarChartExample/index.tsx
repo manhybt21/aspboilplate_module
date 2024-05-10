@@ -11,7 +11,7 @@ const data = [
   { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
 ];
 
-const BarChartExample: React.SFC = () => {
+const BarChartExample: React.FC = () => {
   return (
     <BarChart width={600} height={350} data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
       <CartesianGrid strokeDasharray="3 3" />

@@ -16,7 +16,7 @@ const data = [
   { name: 'page 12', visit: 3200, session: 3300, amt: 1900 },
 ];
 
-const LineChartExample: React.SFC = () => {
+const LineChartExample: React.FC = () => {
   return (
     <LineChart width={1150} height={300} data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
       <XAxis dataKey="name" />
