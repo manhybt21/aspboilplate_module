@@ -1,10 +1,13 @@
-import * as React from 'react';
-import { Spin } from 'antd';
+import { Flex, Spin } from 'antd'
 
-const Loading = () => (
-  <div style={{ paddingTop: 100, textAlign: 'center' }}>
-    <Spin size="large" />
-  </div>
-);
+const Loading = () => {
+  return (
+    <Flex style={{ height: '100%' }} align='center' justify='center'>
+      <Spin tip='Loading' size='large'>
+        <div className='content' />
+      </Spin>
+    </Flex>
+  )
+}
 
-export default Loading;
+export default Loading

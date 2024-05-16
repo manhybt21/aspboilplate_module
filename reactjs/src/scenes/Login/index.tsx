@@ -1,170 +1,102 @@
-import React, { useState, useRef, FC } from 'react';
-import { Button, Card, Checkbox, Col, Form, Input, Modal, Row } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { inject, observer } from 'mobx-react';
-import { L } from '../../lib/abpUtility';
-import Stores from '../../stores/storeIdentifier';
-import TenantAvailabilityState from '../../services/account/dto/tenantAvailabilityState';
-import rules from './index.validation';
-import { Link } from 'react-router-dom';
-import { FormInstance } from 'antd/lib';
-declare var abp: any;
-const FormItem = Form.Item;
+import React, { useState, useRef, FC } from 'react'
+import { Button, Card, Checkbox, Col, Flex, Form, Input, Row, Typography } from 'antd'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { inject, observer } from 'mobx-react'
+import { L } from '../../lib/abpUtility'
+import Stores from '../../stores/storeIdentifier'
+import rules from './index.validation'
+import { FormInstance } from 'antd/lib'
+import TenantChangeModal from '../../components/TenantChangeModal'
+import AccountStore from '../../stores/accountStore'
+import AuthenticationStore from '../../stores/authenticationStore'
+import LoginModel from '../../models/Login/loginModel'
+declare var abp: any
+const FormItem = Form.Item
+export interface ILoginProps {
+  authenticationStore: AuthenticationStore
+  accountStore: AccountStore
+}
+const Login: FC<ILoginProps> = (props) => {
+  const [showModal, setShowModal] = useState(false)
+  const formRef = useRef<FormInstance<LoginModel>>(null)
 
-const Login: FC<any> = (props) => {
-  const [showModal, setShowModal] = useState(false);
-  const [tenancyName, setTenancyName] = useState('');
-  const formRef = useRef<FormInstance>(null);
-
-  const { authenticationStore, sessionStore, accountStore } = props;
-
-  const changeTenant = async () => {
-    if (!tenancyName) {
-      abp.multiTenancy.setTenantIdCookie(undefined);
-      window.location.href = '/';
-      return;
-    } else {
-      await accountStore.isTenantAvailable(tenancyName);
-      const { tenant } = accountStore;
-      switch (tenant.state) {
-        case TenantAvailabilityState.Available:
-          abp.multiTenancy.setTenantIdCookie(tenant.tenantId);
-          authenticationStore.loginModel.tenancyName = tenancyName;
-          setShowModal(false);
-          window.location.href = '/';
-          return;
-        case TenantAvailabilityState.InActive:
-          Modal.error({ title: L('Error'), content: L('TenantIsNotActive') });
-          break;
-        case TenantAvailabilityState.NotFound:
-          Modal.error({
-            title: L('Error'),
-            content: L('ThereIsNoTenantDefinedWithName{0}', tenancyName),
-          });
-          break;
-      }
-    }
-  };
-
-  const handleSubmit = async (values: any) => {
-    const { loginModel } = authenticationStore;
-    await authenticationStore.login(values);
-    sessionStorage.setItem('rememberMe', loginModel.rememberMe ? '1' : '0');
-    //const { state } = location;
-    window.location.href = '/';
-  };
-
-  //const { from } = location.state || { from: { pathname: '/' } };
-  if (authenticationStore.isAuthenticated) return <Link to={'/'} />;
+  const { authenticationStore, accountStore } = props
+  const handleSubmit = async (values: LoginModel) => {
+    await authenticationStore.login(values)
+    sessionStorage.setItem('rememberMe', values.rememberMe ? '1' : '0')
+    window.location.href = '/'
+  }
 
   return (
-    <Form className="" onFinish={handleSubmit} ref={formRef}>
-      <Row style={{ marginTop: 100 }}>
-        <Col span={8} offset={8}>
-          <Card>
-            <Row>
-              {!!sessionStore.currentLogin.tenant ? (
-                <Col span={24} offset={0} style={{ textAlign: 'center' }}>
-                  <Button type="link" onClick={() => setShowModal(true)}>
-                    {L('CurrentTenant')} : {sessionStore.currentLogin.tenant.tenancyName}
-                  </Button>
-                </Col>
-              ) : (
-                <Col span={24} offset={0} style={{ textAlign: 'center' }}>
-                  <Button type="link" onClick={() => setShowModal(true)}>
-                    {L('NotSelected')}
-                  </Button>
-                </Col>
-              )}
-            </Row>
-          </Card>
-        </Col>
-      </Row>
-
-      <Row>
-        <Modal
-          visible={showModal}
-          onCancel={() => setShowModal(false)}
-          onOk={changeTenant}
-          title={L('ChangeTenant')}
-          okText={L('OK')}
-          cancelText={L('Cancel')}
-        >
-          <Row>
-            <Col span={8} offset={8}>
-              <h3>{L('TenancyName')}</h3>
-            </Col>
-            <Col>
-              <FormItem name={'tenancyName'}>
+    <Flex justify='center' align='center' style={{ width: '100%' }}>
+      <Row style={{ width: '100%', padding: 16 }}>
+        <Col xs={24} sm={8}></Col>
+        <Col xs={24} sm={8}>
+          <Form className='' onFinish={handleSubmit} ref={formRef} layout='vertical'>
+            <Card style={{ marginTop: 12 }}>
+              <div style={{ textAlign: 'center' }}>
+                <h3>{L('WelcomeMessage')}</h3>
+              </div>
+              <Flex justify='center' align='center' style={{ marginBottom: 16 }} gap={8}>
+                <Typography.Text color='#3f4254'>
+                  {L('CurrentTenant')} :{' '}
+                  {!!abp.multiTenancy.getTenancyNameCookie()
+                    ? abp.multiTenancy.getTenancyNameCookie()
+                    : L('NotSelected')}
+                </Typography.Text>
+                <Button type='link' onClick={() => setShowModal(true)} style={{ padding: 0 }}>
+                  ({L('ChangeTenant')})
+                </Button>
+              </Flex>
+              <Form.Item name={'userNameOrEmailAddress'} rules={rules.userNameOrEmailAddress}>
                 <Input
-                  placeholder={L('TenancyName')}
+                  placeholder={L('UserNameOrEmail')}
+                  size='large'
                   prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  size="large"
-                  onChange={(e) => setTenancyName(e.target.value)}
+                  variant='filled'
+                />
+              </Form.Item>
+              <FormItem name={'password'} rules={rules.password}>
+                <Input.Password
+                  placeholder={L('Password')}
+                  prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  size='large'
                 />
               </FormItem>
-              {!formRef.current?.getFieldValue('tenancyName') ? (
-                <div>{L('LeaveEmptyToSwitchToHost')}</div>
-              ) : (
-                ''
-              )}
-            </Col>
-          </Row>
-        </Modal>
-      </Row>
-      <Row style={{ marginTop: 10 }}>
-        <Col span={8} offset={8}>
-          <Card>
-            <div style={{ textAlign: 'center' }}>
-              <h3>{L('WellcomeMessage')}</h3>
-            </div>
-            <FormItem name={'userNameOrEmailAddress'} rules={rules.userNameOrEmailAddress}>
-              <Input
-                placeholder={L('UserNameOrEmail')}
-                prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                size="large"
-              />
-            </FormItem>
-
-            <FormItem name={'password'} rules={rules.password}>
-              <Input
-                placeholder={L('Password')}
-                prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type="password"
-                size="large"
-              />
-            </FormItem>
-            <Row style={{ margin: '0px 0px 10px 15px ' }}>
-              <Col span={12} offset={0}>
-                <Checkbox
-                  checked={authenticationStore.loginModel.rememberMe}
-                  onChange={authenticationStore.loginModel.toggleRememberMe}
-                  style={{ paddingRight: 8 }}
-                />
-                {L('RememberMe')}
-                <br />
-                <a>{L('ForgotPassword')}</a>
-              </Col>
-
-              <Col span={8} offset={4}>
-                <Button
-                  style={{ backgroundColor: '#f5222d', color: 'white' }}
-                  htmlType={'submit'}
-                  danger
-                >
+              <Row>
+                <Col xs={12}>
+                  <FormItem name={'rememberMe'} valuePropName='checked'>
+                    <Checkbox style={{ paddingRight: 8 }}>{L('RememberMe')}</Checkbox>
+                  </FormItem>
+                </Col>
+                <Col xs={12} style={{ textAlign: 'end' }}>
+                  <a>{L('ForgotPassword')}</a>
+                </Col>
+              </Row>
+              <FormItem style={{ marginTop: 24 }}>
+                <Button htmlType='submit' type='primary' size={'large'} style={{ width: '100%' }}>
                   {L('LogIn')}
                 </Button>
-              </Col>
-            </Row>
-          </Card>
+              </FormItem>
+            </Card>
+          </Form>
         </Col>
+        <Col xs={24} sm={8}></Col>
       </Row>
-    </Form>
-  );
-};
+      <TenantChangeModal
+        accountStore={accountStore}
+        authenticationStore={authenticationStore}
+        handleClose={() => {
+          setShowModal(false)
+        }}
+        visible={showModal}
+      />
+    </Flex>
+  )
+}
 
 export default inject(
   Stores.AuthenticationStore,
   Stores.SessionStore,
   Stores.AccountStore
-)(observer(Login));
+)(observer(Login))

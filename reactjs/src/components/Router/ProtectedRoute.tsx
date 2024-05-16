@@ -1,10 +1,10 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import { Link, Route } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom'
 
-import { isGranted } from '../../lib/abpUtility';
+import { isGranted } from '../../lib/abpUtility'
 
-declare var abp: any;
+declare var abp: any
 
 const ProtectedRoute = ({ path, component: Component, permission, render, ...rest }: any) => {
   return (
@@ -18,7 +18,7 @@ const ProtectedRoute = ({ path, component: Component, permission, render, ...res
                 pathname: '/user/login',
               }}
             />
-          );
+          )
 
         if (permission && !isGranted(permission)) {
           return (
@@ -27,13 +27,13 @@ const ProtectedRoute = ({ path, component: Component, permission, render, ...res
                 pathname: '/exception?type=401',
               }}
             />
-          );
+          )
         }
 
-        return Component ? <Component {...props} /> : render(props);
+        return Component ? <Component {...props} /> : render(props)
       }}
     />
-  );
-};
+  )
+}
 
-export default ProtectedRoute;
+export default ProtectedRoute

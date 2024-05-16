@@ -1,12 +1,5 @@
-interface ApplicationInfoDto {
-  version: string;
-  releaseDate: Date;
-  features: Feature[];
+export default class ApplicationInfoDto {
+  version!: string
+  releaseDate!: Date
+  features: { [featureName: string]: boolean } | undefined
 }
-
-export interface Feature {
-  name: string;
-  included: boolean;
-}
-
-export default ApplicationInfoDto;

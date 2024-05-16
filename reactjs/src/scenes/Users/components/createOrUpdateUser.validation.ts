@@ -1,4 +1,4 @@
-import { L } from '../../../lib/abpUtility';
+import { L } from '../../../lib/abpUtility'
 
 const rules = {
   name: [{ required: true, message: L('ThisFieldIsRequired') }],
@@ -11,6 +11,6 @@ const rules = {
       message: 'The input is not valid E-mail!',
     },
   ],
-};
+}
 
-export default rules;
+export default rules

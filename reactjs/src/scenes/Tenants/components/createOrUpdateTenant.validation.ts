@@ -1,4 +1,4 @@
-import { L } from '../../../lib/abpUtility';
+import { L } from '../../../lib/abpUtility'
 
 const rules = {
   tenancyName: [{ required: true, message: L('ThisFieldIsRequired') }],
@@ -8,8 +8,8 @@ const rules = {
     {
       type: 'email',
       message: 'The input is not valid E-mail!',
-    }
+    },
   ],
-};
+}
 
-export default rules;
+export default rules

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react'
 import {
   Button,
   Card,
@@ -11,93 +11,99 @@ import {
   Table,
   TableColumnsType,
   TablePaginationConfig,
-} from 'antd';
-import { inject, observer } from 'mobx-react';
-import CreateOrUpdateRoleModal from './components/createOrUpdateRole';
-import { EntityDto } from '../../services/dto/entityDto';
-import { L } from '../../lib/abpUtility';
-import RoleStore from '../../stores/roleStore';
-import Stores from '../../stores/storeIdentifier';
-import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
-import { FormInstance } from 'antd/lib/form';
-import { GetAllRoleOutput } from '../../services/role/dto/getAllRoleOutput';
+} from 'antd'
+import { inject, observer } from 'mobx-react'
+import CreateOrUpdateRoleModal from './components/createOrUpdateRole'
+import { EntityDto } from '../../services/dto/entityDto'
+import { L } from '../../lib/abpUtility'
+import RoleStore from '../../stores/roleStore'
+import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
+import { FormInstance } from 'antd/lib/form'
+import { GetAllRoleOutput } from '../../services/role/dto/getAllRoleOutput'
+import Stores from '../../stores/storeIdentifier'
+export interface IRoleProps {
+  roleStore: RoleStore
+}
+const confirm = Modal.confirm
+const Search = Input.Search
 
-const confirm = Modal.confirm;
-const Search = Input.Search;
-
-const Role = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [roleId, setRoleId] = useState(0);
-  const [filter, setFilter] = useState<string>('');
-  const [skipCount, setSkipCount] = useState(0);
-  const formRef = useRef<FormInstance>(null);
-  const roleStore = new RoleStore();
+const Role: FC<IRoleProps> = (props) => {
+  const [modalVisible, setModalVisible] = useState(false)
+  const [roleId, setRoleId] = useState(0)
+  const [filter, setFilter] = useState<string>('')
+  const [skipCount, setSkipCount] = useState(1)
+  const [maxResultCount, setMaxResultCount] = React.useState<number>(10)
+  const [dataSource, setDataSource] = useState<GetAllRoleOutput[]>([])
+  const formRef = useRef<FormInstance>(null)
+  const { roleStore } = props
   useEffect(() => {
-    getAll();
-  }, [skipCount]);
+    getAll()
+  }, [maxResultCount, skipCount, filter])
 
   const getAll = async () => {
-    await roleStore.getAll({ maxResultCount: 10, skipCount: 0, keyword: filter });
-  };
+    await roleStore.getAll({
+      maxResultCount: maxResultCount,
+      skipCount: skipCount - 1,
+      keyword: filter,
+    })
+    setDataSource(roleStore.roles === undefined ? [] : roleStore.roles.items)
+  }
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
-    const skipCount = (pagination.current ?? 1 - 1) * 10;
-    setSkipCount(skipCount);
-    getAll();
-  };
+    const skipCount = pagination.current ?? 1 - 1
+    setSkipCount(skipCount)
+    setMaxResultCount(10)
+  }
 
   const createOrUpdateModalOpen = async (entityDto: EntityDto) => {
     if (entityDto.id === 0) {
-      roleStore.createRole();
-      await roleStore.getAllPermissions();
+      await roleStore.getAllPermissions()
+      roleStore.createRole()
     } else {
-      await roleStore.getRoleForEdit(entityDto);
-      await roleStore.getAllPermissions();
+      await roleStore.getAllPermissions()
+      await roleStore.getRoleForEdit(entityDto)
     }
 
-    setRoleId(entityDto.id);
-    setModalVisible(true);
+    setRoleId(entityDto.id)
+    setModalVisible(true)
 
     setTimeout(() => {
       formRef.current?.setFieldsValue({
         ...roleStore.roleEdit.role,
         grantedPermissions: roleStore.roleEdit.grantedPermissionNames,
-      });
-    }, 100);
-  };
+      })
+    }, 100)
+  }
 
   const deleteRole = (input: EntityDto) => {
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        roleStore.delete(input);
+        roleStore.delete(input)
       },
       onCancel() {},
-    });
-  };
+    })
+  }
 
   const handleCreate = () => {
-    const form = formRef.current;
+    const form = formRef.current
     form!.validateFields().then(async (values) => {
       if (roleId === 0) {
-        await roleStore.create(values);
+        await roleStore.create(values)
       } else {
-        await roleStore.update({ id: roleId, ...values });
+        await roleStore.update({ id: roleId, ...values })
       }
 
-      await getAll();
-      setModalVisible(false);
-      form!.resetFields();
-    });
-  };
+      await getAll()
+      setModalVisible(false)
+      form!.resetFields()
+    })
+  }
 
   const handleSearch = (value: string) => {
-    setFilter(value);
-    getAll();
-  };
-
-  const { allPermissions, roles } = roleStore;
-
+    setFilter(value)
+    getAll()
+  }
   const columns: TableColumnsType<GetAllRoleOutput> = [
     {
       title: L('RoleName'),
@@ -128,16 +134,16 @@ const Role = () => {
                 <Menu.Item onClick={() => deleteRole({ id: item.id })}>{L('Delete')}</Menu.Item>
               </Menu>
             }
-            placement="bottomLeft"
+            placement='bottomLeft'
           >
-            <Button type="primary" icon={<SettingOutlined />}>
+            <Button type='primary' icon={<SettingOutlined />}>
               {L('Actions')}
             </Button>
           </Dropdown>
         </div>
       ),
     },
-  ];
+  ]
 
   return (
     <Card>
@@ -161,8 +167,8 @@ const Role = () => {
           xxl={{ span: 1, offset: 21 }}
         >
           <Button
-            type="primary"
-            shape="circle"
+            type='primary'
+            shape='circle'
             icon={<PlusOutlined />}
             onClick={() => createOrUpdateModalOpen({ id: 0 })}
           />
@@ -183,12 +189,16 @@ const Role = () => {
           xxl={{ span: 24, offset: 0 }}
         >
           <Table
-            rowKey="id"
+            rowKey='id'
             bordered={true}
-            pagination={{ pageSize: 10, total: roles ? roles.totalCount : 0, defaultCurrent: 1 }}
+            pagination={{
+              pageSize: 10,
+              total: roleStore.roles !== undefined ? roleStore.roles.totalCount : 0,
+              defaultCurrent: 1,
+            }}
             columns={columns}
-            loading={!roles}
-            dataSource={roles ? roles.items : []}
+            loading={dataSource.length === 0 ? true : false}
+            dataSource={dataSource}
             onChange={handleTableChange}
           />
         </Col>
@@ -199,12 +209,12 @@ const Role = () => {
         onCancel={() => setModalVisible(false)}
         modalType={roleId === 0 ? 'edit' : 'create'}
         onOk={handleCreate}
-        permissions={allPermissions}
+        permissions={roleStore.allPermissions}
         roleStore={roleStore}
         formRef={formRef}
       />
     </Card>
-  );
-};
+  )
+}
 
-export default inject(Stores.RoleStore)(observer(Role));
+export default inject(Stores.RoleStore)(observer(Role))

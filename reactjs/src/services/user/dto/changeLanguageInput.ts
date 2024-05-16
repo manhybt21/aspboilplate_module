@@ -1,3 +1,3 @@
 export interface ChangeLanguagaInput {
-  languageName: string;
+  languageName: string
 }

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import * as React from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 
 const data = [
   { name: 'page 1', visit: 4000, session: 2400, amt: 2400 },
@@ -14,20 +14,25 @@ const data = [
   { name: 'page 10', visit: 5000, session: 6100, amt: 2100 },
   { name: 'page 11', visit: 4000, session: 4300, amt: 2000 },
   { name: 'page 12', visit: 3200, session: 3300, amt: 1900 },
-];
+]
 
 const LineChartExample: React.FC = () => {
   return (
-    <LineChart width={1150} height={300} data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-      <XAxis dataKey="name" />
+    <LineChart
+      width={1150}
+      height={300}
+      data={data}
+      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+    >
+      <XAxis dataKey='name' />
       <YAxis />
-      <CartesianGrid strokeDasharray="3 3" />
+      <CartesianGrid strokeDasharray='3 3' />
       <Tooltip />
       <Legend />
-      <Line type="monotone" dataKey="visit" stroke="#8884d8" activeDot={{ r: 12 }} />
-      <Line type="monotone" dataKey="session" stroke="#82ca9d" />
+      <Line type='monotone' dataKey='visit' stroke='#8884d8' activeDot={{ r: 12 }} />
+      <Line type='monotone' dataKey='session' stroke='#82ca9d' />
     </LineChart>
-  );
-};
+  )
+}
 
-export default LineChartExample;
+export default LineChartExample

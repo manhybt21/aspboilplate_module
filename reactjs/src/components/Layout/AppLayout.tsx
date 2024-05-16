@@ -1,81 +1,65 @@
-import './AppLayout.less';
+import './AppLayout.less'
+import React, { useState, useEffect, FC } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import DocumentTitle from 'react-document-title'
+import { Layout } from 'antd'
+import SiderMenu from '../../components/SiderMenu'
+import utils from '../../utils/utils'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
+import DrawerMenu from '../DrawerMenu'
+import { isMobile } from 'mobile-device-detect'
 
-import * as React from 'react';
+const { Content } = Layout
 
-import { Route, Routes, Link } from 'react-router-dom';
+const AppLayout: FC = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [collapsed, setCollapsed] = useState(false)
 
-import DocumentTitle from 'react-document-title';
-import Footer from '../../components/Footer';
-import Header from '../../components/Header';
-import { Layout } from 'antd';
-import ProtectedRoute from '../../components/Router/ProtectedRoute';
-import SiderMenu from '../../components/SiderMenu';
-import { appRouters } from '../Router/router.config';
-import utils from '../../utils/utils';
-import NotFoundRoute from '../Router/NotFoundRoute';
+  useEffect(() => {
+    if (location.pathname === '/' || location.pathname === '') {
+      navigate('/dashboard')
+    }
+  }, [location.pathname])
 
-const { Content } = Layout;
+  const toggle = () => {
+    setCollapsed(!collapsed)
+  }
 
-class AppLayout extends React.Component<any> {
-  state = {
-    collapsed: false,
-  };
+  const onCollapse = (collapsed: boolean) => {
+    setCollapsed(collapsed)
+  }
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  };
+  return (
+    <DocumentTitle title={utils.getPageTitle(location.pathname)}>
+      <Layout style={{ height: '100vh' }}>
+        {isMobile ? (
+          <DrawerMenu onCollapse={toggle} collapsed={collapsed} />
+        ) : (
+          <SiderMenu onCollapse={onCollapse} collapsed={collapsed} />
+        )}
 
-  onCollapse = (collapsed: any) => {
-    this.setState({ collapsed });
-  };
-
-  render() {
-    const {
-      history,
-      location: { pathname },
-    } = this.props;
-
-    const { path } = this.props.match;
-    const { collapsed } = this.state;
-
-    const layout = (
-      <Layout style={{ minHeight: '100vh' }}>
-        <SiderMenu
-          path={path}
-          onCollapse={this.onCollapse}
-          history={history}
-          collapsed={collapsed}
-        />
         <Layout>
-          <Layout.Header style={{ background: '#fff', minHeight: 52, padding: 0 }}>
-            <Header collapsed={this.state.collapsed} toggle={this.toggle} />
+          <Layout.Header
+            style={{
+              background: '#fff',
+              minHeight: 52,
+              padding: 0,
+            }}
+          >
+            <Header collapsed={collapsed} toggle={toggle} />
           </Layout.Header>
-          <Content style={{ margin: 16 }}>
-            <Routes>
-              {pathname === '/' && <Link to="/dashboard" />}
-              {appRouters
-                .filter((item: any) => !item.isLayout)
-                .map((route: any, index: any) => (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    Component={(props) => (
-                      <ProtectedRoute component={route.component} permission={route.permission} />
-                    )}
-                  />
-                ))}
-              {pathname !== '/' && <NotFoundRoute />}
-            </Routes>
+          <Content
+            style={{ padding: 16, maxHeight: '100%', overflowX: 'hidden', overflowY: 'scroll' }}
+          >
+            <Outlet />
           </Content>
           <Footer />
         </Layout>
       </Layout>
-    );
-
-    return <DocumentTitle title={utils.getPageTitle(pathname)}>{layout}</DocumentTitle>;
-  }
+    </DocumentTitle>
+  )
 }
 
-export default AppLayout;
+export default AppLayout

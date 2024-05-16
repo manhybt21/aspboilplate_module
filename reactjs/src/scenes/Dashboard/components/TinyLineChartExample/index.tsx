@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { LineChart, Line } from 'recharts';
+import * as React from 'react'
+import { LineChart, Line } from 'recharts'
 
 const data = [
   { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
@@ -9,14 +9,14 @@ const data = [
   { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
   { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
   { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-];
+]
 
 const TinyLineChartExample: React.FC = () => {
   return (
     <LineChart width={300} height={100} data={data}>
-      <Line type="monotone" dataKey="pv" stroke="#fff" strokeWidth={2} />
+      <Line type='monotone' dataKey='pv' stroke='#fff' strokeWidth={2} />
     </LineChart>
-  );
-};
+  )
+}
 
-export default TinyLineChartExample;
+export default TinyLineChartExample

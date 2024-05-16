@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react'
 import {
   Button,
   Card,
@@ -12,91 +12,101 @@ import {
   Modal,
   TableColumnsType,
   TablePaginationConfig,
-} from 'antd';
-import { inject, observer } from 'mobx-react';
-import CreateOrUpdateTenant from './components/createOrUpdateTenant';
-import { L } from '../../lib/abpUtility';
-import Stores from '../../stores/storeIdentifier';
-import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
-import { EntityDto } from '../../services/dto/entityDto';
-import { FormInstance } from 'antd/lib';
-import { GetAllTenantOutput } from '../../services/tenant/dto/getAllTenantOutput';
+} from 'antd'
+import { inject, observer } from 'mobx-react'
+import CreateOrUpdateTenant from './components/createOrUpdateTenant'
+import { L } from '../../lib/abpUtility'
+import Stores from '../../stores/storeIdentifier'
+import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
+import { EntityDto } from '../../services/dto/entityDto'
+import { FormInstance } from 'antd/lib'
+import { GetAllTenantOutput } from '../../services/tenant/dto/getAllTenantOutput'
+import TenantStore from '../../stores/tenantStore'
+export interface ITenantProps {
+  tenantStore: TenantStore
+}
+const confirm = Modal.confirm
+const { Search } = Input
 
-const confirm = Modal.confirm;
-const { Search } = Input;
-
-const Tenant = ({ tenantStore }: any) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [tenantId, setTenantId] = useState(0);
-  const [filter, setFilter] = useState('');
-  const [skipCount, setSkipCount] = useState(1);
-  const formRef = useRef<FormInstance>(null);
-
+const Tenant: FC<ITenantProps> = (props) => {
+  const { tenantStore } = props
+  const [modalVisible, setModalVisible] = useState(false)
+  const [tenantId, setTenantId] = useState(0)
+  const [filter, setFilter] = useState('')
+  const [skipCount, setSkipCount] = useState(1)
+  const [maxResultCount, setMaxResultCount] = React.useState<number>(10)
+  const formRef = useRef<FormInstance>(null)
+  const [dataSource, setDataSource] = useState<GetAllTenantOutput[]>([])
   useEffect(() => {
-    getAll();
-  }, [skipCount]);
+    getAll()
+  }, [skipCount, filter, maxResultCount])
 
   const getAll = async () => {
-    await tenantStore.getAll({ maxResultCount: 10, skipCount: 0, keyword: filter });
-  };
+    await tenantStore.getAll({
+      maxResultCount: maxResultCount,
+      skipCount: skipCount - 1,
+      keyword: filter,
+    })
+    setDataSource(tenantStore.tenants === undefined ? [] : tenantStore.tenants.items)
+  }
 
   const handleTableChange = async (pagination: TablePaginationConfig) => {
-    const skipCount = (pagination?.current ?? 1 - 1) * 10;
-    setSkipCount(skipCount);
-    await tenantStore.getAll({ maxResultCount: 10, skipCount: skipCount, keyword: filter });
-  };
+    const skipCount = pagination?.current ?? 1 - 1
+    setSkipCount(skipCount)
+    setMaxResultCount(10)
+  }
 
   const createOrUpdateModalOpen = async (entityDto: EntityDto) => {
     if (entityDto.id === 0) {
-      tenantStore.createTenant();
+      tenantStore.createTenant()
     } else {
-      await tenantStore.get(entityDto);
+      await tenantStore.get(entityDto)
     }
 
-    setTenantId(entityDto.id);
-    setModalVisible(true);
+    setTenantId(entityDto.id)
+    setModalVisible(true)
 
     setTimeout(() => {
       if (entityDto.id !== 0) {
         formRef.current?.setFieldsValue({
           ...tenantStore.tenantModel,
-        });
+        })
       } else {
-        formRef.current?.resetFields();
+        formRef.current?.resetFields()
       }
-    }, 100);
-  };
+    }, 100)
+  }
 
   const deleteTenant = (input: EntityDto) => {
     confirm({
       title: 'Do you Want to delete these items?',
       onOk() {
-        tenantStore.delete(input);
+        tenantStore.delete(input)
       },
       onCancel() {},
-    });
-  };
+    })
+  }
 
   const handleCreate = async () => {
     formRef.current?.validateFields().then(async (values) => {
       if (tenantId === 0) {
-        await tenantStore.create(values);
+        await tenantStore.create(values)
       } else {
-        await tenantStore.update({ id: tenantId, ...values });
+        await tenantStore.update({ id: tenantId, ...values })
       }
 
-      await getAll();
-      setModalVisible(false);
-      formRef.current?.resetFields();
-    });
-  };
+      await getAll()
+      setModalVisible(false)
+      formRef.current?.resetFields()
+    })
+  }
 
   const handleSearch = (value: string) => {
-    setFilter(value);
-    getAll();
-  };
+    setFilter(value)
+    getAll()
+  }
 
-  const { tenants } = tenantStore;
+  const { tenants } = tenantStore
 
   const columns: TableColumnsType<GetAllTenantOutput> = [
     {
@@ -119,7 +129,7 @@ const Tenant = ({ tenantStore }: any) => {
       key: 'isActive',
       width: 150,
       render: (text) =>
-        text === true ? <Tag color="#2db7f5">{L('Yes')}</Tag> : <Tag color="red">{L('No')}</Tag>,
+        text === true ? <Tag color='#2db7f5'>{L('Yes')}</Tag> : <Tag color='red'>{L('No')}</Tag>,
     },
     {
       title: L('Actions'),
@@ -136,16 +146,16 @@ const Tenant = ({ tenantStore }: any) => {
                 <Menu.Item onClick={() => deleteTenant({ id: item.id })}>{L('Delete')}</Menu.Item>
               </Menu>
             }
-            placement="bottomLeft"
+            placement='bottomLeft'
           >
-            <Button type="primary" icon={<SettingOutlined />}>
+            <Button type='primary' icon={<SettingOutlined />}>
               {L('Actions')}
             </Button>
           </Dropdown>
         </div>
       ),
     },
-  ];
+  ]
 
   return (
     <Card>
@@ -169,8 +179,8 @@ const Tenant = ({ tenantStore }: any) => {
           xxl={{ span: 1, offset: 21 }}
         >
           <Button
-            type="primary"
-            shape="circle"
+            type='primary'
+            shape='circle'
             icon={<PlusOutlined />}
             onClick={() => createOrUpdateModalOpen({ id: 0 })}
           />
@@ -191,7 +201,7 @@ const Tenant = ({ tenantStore }: any) => {
           xxl={{ span: 24, offset: 0 }}
         >
           <Table
-            rowKey="id"
+            rowKey='id'
             bordered={true}
             pagination={{
               pageSize: 10,
@@ -199,8 +209,8 @@ const Tenant = ({ tenantStore }: any) => {
               defaultCurrent: 1,
             }}
             columns={columns}
-            loading={!tenants}
-            dataSource={tenants ? tenants.items : []}
+            loading={dataSource.length === 0 ? true : false}
+            dataSource={dataSource}
             onChange={handleTableChange}
           />
         </Col>
@@ -213,7 +223,7 @@ const Tenant = ({ tenantStore }: any) => {
         onCreate={handleCreate}
       />
     </Card>
-  );
-};
+  )
+}
 
-export default inject(Stores.TenantStore)(observer(Tenant));
+export default inject(Stores.TenantStore)(observer(Tenant))

@@ -1,16 +1,16 @@
-import { action, observable } from 'mobx';
+import { action, observable } from 'mobx'
 
-import { GetCurrentLoginInformations } from '../services/session/dto/getCurrentLoginInformations';
-import sessionService from '../services/session/sessionService';
+import { GetCurrentLoginInformations } from '../services/session/dto/getCurrentLoginInformations'
+import sessionService from '../services/session/sessionService'
 
 class SessionStore {
-  @observable currentLogin: GetCurrentLoginInformations = new GetCurrentLoginInformations();
-
+  @observable currentLogin: GetCurrentLoginInformations = new GetCurrentLoginInformations()
+  @observable tenantName!: string;
   @action
   async getCurrentLoginInformations() {
-    let result = await sessionService.getCurrentLoginInformations();
-    this.currentLogin = result;
+    let result = await sessionService.getCurrentLoginInformations()
+    this.currentLogin = result
   }
 }
 
-export default SessionStore;
+export default SessionStore

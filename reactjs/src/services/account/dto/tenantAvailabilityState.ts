@@ -4,4 +4,4 @@ enum TenantAvailabilityState {
   NotFound,
 }
 
-export default TenantAvailabilityState;
+export default TenantAvailabilityState

@@ -1,7 +1,24 @@
-import LoadableComponent from './../Loadable/index';
-import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import LoadableComponent from './../Loadable/index'
+import {
+  HomeOutlined,
+  UserOutlined,
+  TagsOutlined,
+  AppstoreOutlined,
+  InfoCircleOutlined,
+} from '@ant-design/icons'
 
-export const userRouter: any = [
+export interface IRouterProps {
+  path: string
+  name: string
+  permission?: string
+  title: string
+  component: any
+  showInMenu: boolean
+  isLayout?: boolean
+  icon?: any
+}
+
+export const userRouter: IRouterProps[] = [
   {
     path: '/user',
     name: 'user',
@@ -17,17 +34,24 @@ export const userRouter: any = [
     component: LoadableComponent(() => import('../../scenes/Login')),
     showInMenu: false,
   },
-];
+]
 
-export const appRouters: any = [
+export const appRouters: IRouterProps[] = [
   {
-    path: '/',
-    exact: true,
+    path: '/appLayout',
     name: 'home',
     permission: '',
     title: 'Home',
     component: LoadableComponent(() => import('../../components/Layout/AppLayout')),
     isLayout: true,
+    showInMenu: false,
+  },
+  {
+    path: '/',
+    name: 'home',
+    permission: '',
+    title: 'Home',
+    component: LoadableComponent(() => import('../../scenes/Dashboard')),
     showInMenu: false,
   },
   {
@@ -68,7 +92,7 @@ export const appRouters: any = [
   },
   {
     path: '/about',
-    permission: '',
+    permission: 'cjjajjj',
     title: 'About',
     name: 'about',
     icon: InfoCircleOutlined,
@@ -84,13 +108,13 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../components/Logout')),
   },
   {
-    path: '/exception?:type',
+    path: '/exception/:type',
     permission: '',
     title: 'exception',
     name: 'exception',
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Exception')),
   },
-];
+]
 
-export const routers = [...userRouter, ...appRouters];
+export const routers = [...userRouter, ...appRouters]

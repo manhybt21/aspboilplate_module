@@ -1,9 +1,9 @@
-import RoleStore from './roleStore';
-import TenantStore from './tenantStore';
-import UserStore from './userStore';
-import SessionStore from './sessionStore';
-import AuthenticationStore from './authenticationStore';
-import AccountStore from './accountStore';
+import RoleStore from './roleStore'
+import TenantStore from './tenantStore'
+import UserStore from './userStore'
+import SessionStore from './sessionStore'
+import AuthenticationStore from './authenticationStore'
+import AccountStore from './accountStore'
 
 export default function initializeStores() {
   return {
@@ -13,5 +13,5 @@ export default function initializeStores() {
     userStore: new UserStore(),
     sessionStore: new SessionStore(),
     accountStore: new AccountStore(),
-  };
+  }
 }

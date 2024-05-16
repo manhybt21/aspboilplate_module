@@ -1,36 +1,36 @@
-import * as React from 'react';
-import { Row, Col, Card } from 'antd';
+import * as React from 'react'
+import { Row, Col, Card } from 'antd'
 import {
   CheckOutlined,
   QuestionOutlined,
   MessageOutlined,
   UserAddOutlined,
-} from '@ant-design/icons';
-import './index.less';
-import TinyLineChartExample from './components/TinyLineChartExample';
-import BarChartExample from './components/BarChartExample';
-import PieChartExample from './components/PieChartExample';
-import LineChartExample from './components/LineChartExample';
-import ListExample from './components/ListExample';
+} from '@ant-design/icons'
+import './index.less'
+import TinyLineChartExample from './components/TinyLineChartExample'
+import BarChartExample from './components/BarChartExample'
+import PieChartExample from './components/PieChartExample'
+import LineChartExample from './components/LineChartExample'
+import ListExample from './components/ListExample'
 
 const Dashboard = () => {
-  const [cardLoading, setCardLoading] = React.useState(true);
-  const [lineChartLoading, setLineChartLoading] = React.useState(true);
-  const [barChartLoading, setBarChartLoading] = React.useState(true);
-  const [pieChartLoading, setPieChartLoading] = React.useState(true);
+  const [cardLoading, setCardLoading] = React.useState(true)
+  const [lineChartLoading, setLineChartLoading] = React.useState(true)
+  const [barChartLoading, setBarChartLoading] = React.useState(true)
+  const [pieChartLoading, setPieChartLoading] = React.useState(true)
 
   React.useEffect(() => {
-    setTimeout(() => setCardLoading(false), 1000);
-    setTimeout(() => setLineChartLoading(false), 1500);
-    setTimeout(() => setBarChartLoading(false), 2000);
-    setTimeout(() => setPieChartLoading(false), 1000);
-  }, []);
+    setTimeout(() => setCardLoading(false), 1000)
+    setTimeout(() => setLineChartLoading(false), 1500)
+    setTimeout(() => setBarChartLoading(false), 2000)
+    setTimeout(() => setPieChartLoading(false), 1000)
+  }, [])
 
   const visitorStatisticList = [
     { title: 'TODAY', body: '1.200 user' },
     { title: 'YESTERDAY', body: '3.872 user' },
     { title: 'LAST WEEK', body: '26.582 user' },
-  ];
+  ]
 
   return (
     <React.Fragment>
@@ -137,7 +137,7 @@ const Dashboard = () => {
         <Col span={24}>
           <Card
             className={'dashboardBox'}
-            title="Visit Statistics"
+            title='Visit Statistics'
             loading={lineChartLoading}
             bordered={false}
           >
@@ -191,7 +191,7 @@ const Dashboard = () => {
       <Row gutter={16}>
         <Col span={16}>
           <Card
-            title="Payment Statistics"
+            title='Payment Statistics'
             className={'dashboardBox'}
             loading={barChartLoading}
             bordered={false}
@@ -201,7 +201,7 @@ const Dashboard = () => {
         </Col>
         <Col span={8}>
           <Card
-            title="Browser Usage"
+            title='Browser Usage'
             className={'dashboardBox'}
             loading={pieChartLoading}
             bordered={false}
@@ -211,7 +211,7 @@ const Dashboard = () => {
         </Col>
       </Row>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

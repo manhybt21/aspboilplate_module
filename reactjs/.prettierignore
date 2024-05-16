@@ -1,5 +1,6 @@
 **/*.md
 **/*.svg
 **/*.ejs
-**/*.html
-package.json
+**/*.htmln
+node_modules/
+dist/

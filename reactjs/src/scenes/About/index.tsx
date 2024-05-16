@@ -1,6 +1,6 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import { Col, Row } from 'antd';
+import { Col, Row } from 'antd'
 
 const About: React.FC = () => {
   return (
@@ -14,7 +14,7 @@ const About: React.FC = () => {
             <p>
               This is a simple startup template based on ASP.NET Boilerplate framework and Module
               Zero. If you need an enterprise startup project, check{' '}
-              <a href="http://aspnetzero.com?ref=abptmpl" target="_blank" rel="noopener noreferrer">
+              <a href='http://aspnetzero.com?ref=abptmpl' target='_blank' rel='noopener noreferrer'>
                 ASP.NET ZERO
               </a>
               .
@@ -49,35 +49,35 @@ const About: React.FC = () => {
             <p>
               <strong>Module Zero </strong>implements all fundamental concepts of ASP.NET
               Boilerplate framework such as{' '}
-              <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/Tenant-Management">
+              <a href='http://www.aspnetboilerplate.com/Pages/Documents/Zero/Tenant-Management'>
                 tenant management
               </a>{' '}
               (<strong>multi-tenancy</strong>),
-              <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/Role-Management">
+              <a href='http://www.aspnetboilerplate.com/Pages/Documents/Zero/Role-Management'>
                 role management
               </a>
               ,{' '}
-              <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/User-Management">
+              <a href='http://www.aspnetboilerplate.com/Pages/Documents/Zero/User-Management'>
                 user management
               </a>
               ,
-              <a href="http://www.aspnetboilerplate.com/Pages/Documents/Authorization">
+              <a href='http://www.aspnetboilerplate.com/Pages/Documents/Authorization'>
                 authorization
               </a>{' '}
               (
-              <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/Permission-Management">
+              <a href='http://www.aspnetboilerplate.com/Pages/Documents/Zero/Permission-Management'>
                 permission management
               </a>
               ),
-              <a href="http://www.aspnetboilerplate.com/Pages/Documents/Setting-Management">
+              <a href='http://www.aspnetboilerplate.com/Pages/Documents/Setting-Management'>
                 setting management
               </a>
               ,{' '}
-              <a href="http://www.aspnetboilerplate.com/Pages/Documents/Zero/Language-Management">
+              <a href='http://www.aspnetboilerplate.com/Pages/Documents/Zero/Language-Management'>
                 language management
               </a>
               ,{' '}
-              <a href="http://www.aspnetboilerplate.com/Pages/Documents/Audit-Logging">
+              <a href='http://www.aspnetboilerplate.com/Pages/Documents/Audit-Logging'>
                 audit logging
               </a>
               and so on.
@@ -92,9 +92,9 @@ const About: React.FC = () => {
             <p>
               Module Zero is based on Microsoft's
               <a
-                href="https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity"
-                target="_blank"
-                rel="noopener noreferrer"
+                href='https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity'
+                target='_blank'
+                rel='noopener noreferrer'
               >
                 ASP.NET Core Identity
               </a>{' '}
@@ -106,12 +106,12 @@ const About: React.FC = () => {
 
             <ul>
               <li>
-                <a href="https://www.aspnetboilerplate.com/Pages/Documents/Zero/Startup-Template-Core">
+                <a href='https://www.aspnetboilerplate.com/Pages/Documents/Zero/Startup-Template-Core'>
                   Documentation for this template
                 </a>
               </li>
               <li>
-                <a href="http://www.aspnetboilerplate.com/Pages/Documents">
+                <a href='http://www.aspnetboilerplate.com/Pages/Documents'>
                   ASP.NET Boilerplate documentation
                 </a>
               </li>
@@ -122,9 +122,9 @@ const About: React.FC = () => {
             <p>
               This template is developed open source on Github. You can contribute to the template.
               <a
-                href="https://github.com/aspnetboilerplate/module-zero-core-template"
-                target="_blank"
-                rel="noopener noreferrer"
+                href='https://github.com/aspnetboilerplate/module-zero-core-template'
+                target='_blank'
+                rel='noopener noreferrer'
               >
                 https://github.com/aspnetboilerplate/module-zero-core-template
               </a>
@@ -133,6 +133,6 @@ const About: React.FC = () => {
         </div>
       </Col>
     </Row>
-  );
-};
-export default About;
+  )
+}
+export default About

@@ -1,19 +1,19 @@
-import { observable } from 'mobx';
+import { observable } from 'mobx'
 
 class LoginModel {
-  tenancyName!: string;
-  userNameOrEmailAddress!: string;
-  password!: string;
-  @observable rememberMe!: boolean;
-  @observable showModal!: boolean;
+  tenancyName!: string
+  userNameOrEmailAddress!: string
+  password!: string
+  @observable rememberMe!: boolean
+  @observable showModal!: boolean
 
   toggleRememberMe = () => {
-    this.rememberMe = !this.rememberMe;
-  };
+    this.rememberMe = !this.rememberMe
+  }
 
   toggleShowModal = () => {
-    this.showModal = !this.showModal;
-  };
+    this.showModal = !this.showModal
+  }
 }
 
-export default LoginModel;
+export default LoginModel

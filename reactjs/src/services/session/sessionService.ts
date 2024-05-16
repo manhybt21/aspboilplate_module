@@ -1,7 +1,7 @@
-import { GetCurrentLoginInformations } from './dto/getCurrentLoginInformations';
-import http from '../httpService';
+import { GetCurrentLoginInformations } from './dto/getCurrentLoginInformations'
+import http from '../httpService'
 
-declare var abp: any;
+declare var abp: any
 
 class SessionService {
   public async getCurrentLoginInformations(): Promise<GetCurrentLoginInformations> {
@@ -9,10 +9,10 @@ class SessionService {
       headers: {
         'Abp.TenantId': abp.multiTenancy.getTenantIdCookie(),
       },
-    });
+    })
 
-    return result.data.result;
+    return result.data.result
   }
 }
 
-export default new SessionService();
+export default new SessionService()

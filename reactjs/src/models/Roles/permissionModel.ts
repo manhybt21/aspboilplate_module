@@ -1,7 +1,7 @@
 class PermissionModel {
-  name!: string;
-  displayName!: string;
-  description?: any;
+  name!: string
+  displayName!: string
+  description?: any
 }
 
-export default PermissionModel;
+export default PermissionModel

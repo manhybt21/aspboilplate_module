@@ -1,6 +1,6 @@
 export interface GetAllPermissionsOutput {
-  name: string;
-  displayName: string;
-  description: string;
-  id: number;
+  name: string
+  displayName: string
+  description: string
+  id: number
 }

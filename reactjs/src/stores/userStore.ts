@@ -1,50 +1,50 @@
-import { action, observable } from 'mobx';
+import { action, observable } from 'mobx'
 
-import type { CreateOrUpdateUserInput } from '../services/user/dto/createOrUpdateUserInput';
-import { EntityDto } from '../services/dto/entityDto';
-import { GetRoles } from '../services/user/dto/getRolesOuput';
-import { GetUserOutput } from '../services/user/dto/getUserOutput';
-import * as PagedUserResultRequestDto from '../services/user/dto/PagedUserResultRequestDto';
-import * as updateUserInput from '../services/user/dto/updateUserInput';
-import userService from '../services/user/userService';
-import type { PagedResultDto } from '../services/dto/pagedResultDto';
+import type { CreateOrUpdateUserInput } from '../services/user/dto/createOrUpdateUserInput'
+import { EntityDto } from '../services/dto/entityDto'
+import { GetRoles } from '../services/user/dto/getRolesOuput'
+import { GetUserOutput } from '../services/user/dto/getUserOutput'
+import * as PagedUserResultRequestDto from '../services/user/dto/PagedUserResultRequestDto'
+import * as updateUserInput from '../services/user/dto/updateUserInput'
+import userService from '../services/user/userService'
+import type { PagedResultDto } from '../services/dto/pagedResultDto'
 
 class UserStore {
-  @observable users!: PagedResultDto<GetUserOutput>;
-  @observable editUser!: CreateOrUpdateUserInput;
-  @observable roles: GetRoles[] = [];
+  @observable users!: PagedResultDto<GetUserOutput>
+  @observable editUser!: CreateOrUpdateUserInput
+  @observable roles: GetRoles[] = []
 
   @action
   async create(createUserInput: CreateOrUpdateUserInput) {
-    let result = await userService.create(createUserInput);
-    this.users.items.push(result);
+    let result = await userService.create(createUserInput)
+    this.users.items.push(result)
   }
 
   @action
   async update(updateUserInput: updateUserInput.UpdateUserInput) {
-    let result = await userService.update(updateUserInput);
+    let result = await userService.update(updateUserInput)
     this.users.items = this.users.items.map((x: GetUserOutput) => {
-      if (x.id === updateUserInput.id) x = result;
-      return x;
-    });
+      if (x.id === updateUserInput.id) x = result
+      return x
+    })
   }
 
   @action
   async delete(entityDto: EntityDto) {
-    await userService.delete(entityDto);
-    this.users.items = this.users.items.filter((x: GetUserOutput) => x.id !== entityDto.id);
+    await userService.delete(entityDto)
+    this.users.items = this.users.items.filter((x: GetUserOutput) => x.id !== entityDto.id)
   }
 
   @action
   async getRoles() {
-    let result = await userService.getRoles();
-    this.roles = result;
+    let result = await userService.getRoles()
+    this.roles = result
   }
 
   @action
   async get(entityDto: EntityDto) {
-    let result = await userService.get(entityDto);
-    this.editUser = result;
+    let result = await userService.get(entityDto)
+    this.editUser = result
   }
 
   @action
@@ -58,19 +58,19 @@ class UserStore {
       roleNames: [],
       password: '',
       id: 0,
-    };
-    this.roles = [];
+    }
+    this.roles = []
   }
 
   @action
   async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto.PagedUserResultRequestDto) {
-    let result = await userService.getAll(pagedFilterAndSortedRequest);
-    this.users = result;
+    let result = await userService.getAll(pagedFilterAndSortedRequest)
+    this.users = result
   }
 
   async changeLanguage(languageName: string) {
-    await userService.changeLanguage({ languageName: languageName });
+    await userService.changeLanguage({ languageName: languageName })
   }
 }
 
-export default UserStore;
+export default UserStore
