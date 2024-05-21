@@ -40,6 +40,8 @@
     export default class CreateTenant extends AbpBase{
         @Prop({type:Boolean,default:false}) value:boolean;
         tenant:Tenant=new Tenant();
+      $refs: any;
+      $store: any;
         save(){
             (this.$refs.tenantForm as any).validate(async (valid:boolean)=>{
                 if(valid){
@@ -53,6 +55,9 @@
                 }
             })
         }
+      $emit(arg0: string) {
+        throw new Error('Method not implemented.');
+      }
         cancel(){
             (this.$refs.tenantForm as any).resetFields();
             this.$emit('input',false);

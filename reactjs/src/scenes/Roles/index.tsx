@@ -4,8 +4,8 @@ import {
   Card,
   Col,
   Dropdown,
+  Flex,
   Input,
-  Menu,
   Modal,
   Row,
   Table,
@@ -126,14 +126,20 @@ const Role: FC<IRoleProps> = (props) => {
         <div>
           <Dropdown
             trigger={['click']}
-            overlay={
-              <Menu>
-                <Menu.Item onClick={() => createOrUpdateModalOpen({ id: item.id })}>
-                  {L('Edit')}
-                </Menu.Item>
-                <Menu.Item onClick={() => deleteRole({ id: item.id })}>{L('Delete')}</Menu.Item>
-              </Menu>
-            }
+            menu={{
+              items: [
+                {
+                  key: L('Edit'),
+                  label: L('Edit'),
+                  onClick: () => createOrUpdateModalOpen({ id: item.id }),
+                },
+                {
+                  key: L('Delete'),
+                  label: L('Delete'),
+                  onClick: () => deleteRole({ id: item.id }),
+                },
+              ],
+            }}
             placement='bottomLeft'
           >
             <Button type='primary' icon={<SettingOutlined />}>
@@ -147,35 +153,17 @@ const Role: FC<IRoleProps> = (props) => {
 
   return (
     <Card>
+      <Flex justify='space-between' align='center'>
+        <h2>{L('Roles')}</h2>
+        <Button
+          type='primary'
+          shape='circle'
+          icon={<PlusOutlined />}
+          onClick={() => createOrUpdateModalOpen({ id: 0 })}
+        />
+      </Flex>
       <Row>
-        <Col
-          xs={{ span: 4, offset: 0 }}
-          sm={{ span: 4, offset: 0 }}
-          md={{ span: 4, offset: 0 }}
-          lg={{ span: 2, offset: 0 }}
-          xl={{ span: 2, offset: 0 }}
-          xxl={{ span: 2, offset: 0 }}
-        >
-          <h2>{L('Roles')}</h2>
-        </Col>
-        <Col
-          xs={{ span: 14, offset: 0 }}
-          sm={{ span: 15, offset: 0 }}
-          md={{ span: 15, offset: 0 }}
-          lg={{ span: 1, offset: 21 }}
-          xl={{ span: 1, offset: 21 }}
-          xxl={{ span: 1, offset: 21 }}
-        >
-          <Button
-            type='primary'
-            shape='circle'
-            icon={<PlusOutlined />}
-            onClick={() => createOrUpdateModalOpen({ id: 0 })}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col sm={{ span: 10, offset: 0 }}>
+        <Col xs={{ span: 24 }} sm={{ span: 10, offset: 0 }}>
           <Search placeholder={L('Filter')} onSearch={handleSearch} />
         </Col>
       </Row>

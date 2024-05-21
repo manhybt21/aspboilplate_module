@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Card, Col, Dropdown, Input, Menu, Modal, Row, Table, Tag } from 'antd'
+import { Button, Card, Col, Dropdown, Flex, Input, Modal, Row, Table, Tag } from 'antd'
 import { inject, observer } from 'mobx-react'
 import { EntityDto } from '../../services/dto/entityDto'
 import { L } from '../../lib/abpUtility'
@@ -9,6 +9,7 @@ import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
 import { GetUserOutput } from '../../services/user/dto/getUserOutput'
 import CreateOrEditUserModal from './components/create-or-edit-user.modal'
 import Stores from '../../stores/storeIdentifier'
+import type { TableProps } from 'antd'
 
 const confirm = Modal.confirm
 const Search = Input.Search
@@ -88,7 +89,7 @@ const User: React.FC<IUserProps> = (props) => {
   const handleSearch = (value: string) => {
     setFilter(value)
   }
-  const columns = [
+  const columns: TableProps<GetUserOutput>['columns'] = [
     {
       title: L('UserName'),
       dataIndex: 'userName',
@@ -125,14 +126,20 @@ const User: React.FC<IUserProps> = (props) => {
         <div>
           <Dropdown
             trigger={['click']}
-            overlay={
-              <Menu>
-                <Menu.Item onClick={() => createOrUpdateModalOpen({ id: item.id })}>
-                  {L('Edit')}
-                </Menu.Item>
-                <Menu.Item onClick={() => deleteUser({ id: item.id })}>{L('Delete')}</Menu.Item>
-              </Menu>
-            }
+            menu={{
+              items: [
+                {
+                  key: L('Edit'),
+                  label: L('Edit'),
+                  onClick: () => createOrUpdateModalOpen({ id: item.id }),
+                },
+                {
+                  key: L('Delete'),
+                  label: L('Delete'),
+                  onClick: () => deleteUser({ id: item.id }),
+                },
+              ],
+            }}
             placement='bottomLeft'
           >
             <Button type='primary' icon={<SettingOutlined />}>
@@ -146,36 +153,17 @@ const User: React.FC<IUserProps> = (props) => {
 
   return (
     <Card>
+      <Flex justify='space-between' align='center'>
+        <h2>{L('Users')}</h2>
+        <Button
+          type='primary'
+          shape='circle'
+          icon={<PlusOutlined />}
+          onClick={() => createOrUpdateModalOpen({ id: 0 })}
+        />
+      </Flex>
       <Row>
-        <Col
-          xs={{ span: 4, offset: 0 }}
-          sm={{ span: 4, offset: 0 }}
-          md={{ span: 4, offset: 0 }}
-          lg={{ span: 2, offset: 0 }}
-          xl={{ span: 2, offset: 0 }}
-          xxl={{ span: 2, offset: 0 }}
-        >
-          {' '}
-          <h2>{L('Users')}</h2>
-        </Col>
-        <Col
-          xs={{ span: 14, offset: 0 }}
-          sm={{ span: 15, offset: 0 }}
-          md={{ span: 15, offset: 0 }}
-          lg={{ span: 1, offset: 21 }}
-          xl={{ span: 1, offset: 21 }}
-          xxl={{ span: 1, offset: 21 }}
-        >
-          <Button
-            type='primary'
-            shape='circle'
-            icon={<PlusOutlined />}
-            onClick={() => createOrUpdateModalOpen({ id: 0 })}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col sm={{ span: 10, offset: 0 }}>
+        <Col xs={{ span: 24 }} sm={{ span: 10, offset: 0 }}>
           <Search placeholder={L('Filter')} onSearch={handleSearch} />
         </Col>
       </Row>

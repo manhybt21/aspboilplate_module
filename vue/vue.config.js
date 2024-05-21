@@ -5,7 +5,7 @@ module.exports = {
         return {
             plugins:[
                 new CopyWebpackPlugin([{
-                    from:'node_modules/@aspnet/signalr/dist/browser/signalr.min.js',
+                    from:'node_modules/@microsoft/signalr/dist/browser/signalr.min.js',
                     to:'dist'
                 },{
                     from:'node_modules/abp-web-resources/Abp/Framework/scripts/libs/abp.signalr-client.js',
@@ -17,20 +17,20 @@ module.exports = {
             ]
         }
       } else {
-        return {
-            plugins:[
-                new CopyWebpackPlugin([{
-                    from:'node_modules/@aspnet/signalr/dist/browser/signalr.min.js',
-                    to:'dist'
-                },{
-                    from:'node_modules/abp-web-resources/Abp/Framework/scripts/libs/abp.signalr-client.js',
-                    to:'dist'
-                },{
-                    from:'src/lib/abp.js',
-                    to:'dist'
-                }])
-            ]
-        }
+        return { plugins: [new CopyWebpackPlugin([
+              {
+                from: 'node_modules/@microsoft/signalr/dist/browser/signalr.min.js',
+                to: 'dist',
+              },
+              {
+                from: 'node_modules/abp-web-resources/Abp/Framework/scripts/libs/abp.signalr-client.js',
+                to: 'dist',
+              },
+              {
+                from: 'src/lib/abp.js',
+                to: 'dist',
+              },
+            ])] };
       }
     }
 }

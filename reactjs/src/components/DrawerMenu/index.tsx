@@ -1,5 +1,5 @@
 import './index.less'
-import { Avatar, Drawer, Flex } from 'antd'
+import { Avatar, Divider, Drawer, Flex } from 'antd'
 import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AbpLogo from '../../images/abp-logo-long.png'
@@ -40,6 +40,7 @@ const DrawerMenu: FC<IDrawerMenuProps> = (props) => {
       <Flex align='center' justify='center' style={{ marginBottom: 16 }}>
         <Avatar shape='square' style={{ height: 54, width: 128 }} src={AbpLogo} />
       </Flex>
+      <Divider style={{ background: 'white', margin: '8px 0' }} />
       <NavMenu handleMenuClick={handleMenuClick} />
     </Drawer>
   )
