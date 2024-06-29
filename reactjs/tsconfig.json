@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "es5",
-    "lib": ["es6", "dom","dom.iterable","esnext"],
+    "lib": ["es6", "dom", "dom.iterable", "esnext"],
     "sourceMap": true,
     "jsx": "preserve",
     "moduleResolution": "node",
@@ -26,6 +26,14 @@
     "isolatedModules": true,
     "downlevelIteration": true
   },
-  "exclude": ["node_modules", "build", "scripts", "acceptance-tests", "webpack", "jest", "src/setupTests.ts"],
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/setupTests.ts"
+  ],
   "include": ["src"]
 }
